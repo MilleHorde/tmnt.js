@@ -35,10 +35,11 @@ let checkObject = (req, res, next) => {
 };
 
 let authorized = (req, res, next) => {
-  if(req.user._id === req.params.id){
+  if(req.user._id.toString() === req.params.id.toString()){
     next();
+  }else{
+    res.status(401).send({"Error": "not allowed"});
   }
-  res.status(401).send({"Error": "not allowed"})
 };
 
 module.exports = {

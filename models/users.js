@@ -43,6 +43,10 @@ let methods = {
       .save();
   },
   update : (query, schema, options) => {
+    schema.updated = Date.now();
+    if(schema.password){
+      schema.password = crypto.createHash('sha512').update(schema.password).update(config.saltPassword).digest("hex");
+    }
     return model
       .findOneAndUpdate(query, schema, options);
   },
@@ -81,7 +85,6 @@ let methods = {
           });
         })
         .then((user) => {
-          console.log(user);
           return tools.verifyJWTAsync(user.token)
         })
         .catch((err) => {
