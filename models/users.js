@@ -77,6 +77,9 @@ let methods = {
       return methods.findOne({email :data.email})
         .then((user) => {
           return new Promise((resolve, reject) => {
+            if(!user){
+              reject("No user found");
+            }
             let newHash = crypto.createHash('sha512').update(data.password).update(config.saltPassword).digest("hex");
             if(newHash !== user.password){
               reject("Password not good")

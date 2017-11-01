@@ -22,7 +22,7 @@ router.put('/:id', [tools.middlewares.verifyToken, tools.middlewares.authorized,
   event.emit("users.update", res, query, req);
 });
 
-router.get('/', [tools.middlewares.verifyToken], (req, res) => {
+router.get('/', [], (req, res) => {
   event.emit("users.get", res);
 });
 

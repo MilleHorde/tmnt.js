@@ -59,7 +59,7 @@ Event.on("pizzas.get.id", (res, id) => {
       return res.json({response: tools.dto(pizza, "pizzas")});
     })
     .catch((err) => {
-      return res.status(500).json({"Error": err.message || err})
+      return res.status(404).json({"Error": "Not Found"})
     })
 });
 
@@ -76,7 +76,7 @@ Event.on("pizzas.get.custom", (res, query) => {
       return res.json({response: results});
     })
     .catch((err) => {
-      return res.status(500).json({"Error": err.message || err})
+      return res.status(404).json({"Error": "Not Found"})
     })
 });
 
@@ -109,7 +109,7 @@ Event.on("pizzas.remove", (res, query) => {
       return res.json({response: true});
     })
     .catch((err) => {
-      return res.status(500).json({"Error": err.message || err})
+      return res.status(404).json({"Error": "Not Found"})
     })
 });
 
@@ -159,7 +159,7 @@ Event.on("users.get.id", (res, id) => {
       return res.json({response: tools.dto(user, "users")});
     })
     .catch((err) => {
-      return res.status(500).json({"Error": err.message || err})
+      return res.status(404).json({"Error": "Not Found"})
     })
 });
 
@@ -172,7 +172,7 @@ Event.on("users.get.custom", (res, query) => {
       return res.json({response: results});
     })
     .catch((err) => {
-      return res.status(500).json({"Error": err.message || err})
+      return res.status(404).json({"Error": "Not Found"})
     })
 });
 
@@ -232,7 +232,7 @@ Event.on("ingredients.get.id", (res, id) => {
       return res.json({response: tools.dto(ingredient, "ingredients")});
     })
     .catch((err) => {
-      return res.status(500).json({"Error": err.message || err})
+      return res.status(404).json({"Error": "Not Found"})
     })
 });
 
@@ -245,7 +245,7 @@ Event.on("ingredients.get.custom", (res, query) => {
       return res.json({response: results});
     })
     .catch((err) => {
-      return res.status(500).json({"Error": err.message || err})
+      return res.status(404).json({"Error": "Not Found"})
     })
 });
 
