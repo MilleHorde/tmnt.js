@@ -11,9 +11,25 @@ let checkObject = (req, res, next) => {
       if (config[key].required.includes(req.method.toLowerCase()) && !objToCheck[key]) {
         reject(`${key} is missing`);
       }
+      if (config[key].required.includes(req.method.toLowerCase()) && objToCheck[key].length === 0) {
+        reject(`${key} is empty`);
+      }
       if (objToCheck[key]) {
         if (typeof objToCheck[key] !== config[key].type) {
           reject(`${key} is not a ${config[key].type}`);
+        }
+        if(config[key].type === "array"){
+          objToCheck[key].forEach((item) => {
+            if(typeof item !== config[key].subtype){
+              reject(`${key}'s elements are not ${config[key].type}`);
+            }
+            if (config[key].subformat) {
+              let subreg = new RegExp(config[key].subformat, 'i');
+              if (!subreg.test(item)) {
+                reject(`${key}'s elements don't have good format`)
+              }
+            }
+          });
         }
         if (config[key].format) {
           let reg = new RegExp(config[key].format, 'g');

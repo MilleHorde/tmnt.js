@@ -31,9 +31,10 @@ let methods = {
     return tmp
       .save();
   },
-  update : (query, schema) => {
+  update : (query, schema, options) => {
+    schema.updated = Date.now();
     return model
-      .update(query, schema);
+      .findOneAndUpdate(query, schema, options);
   },
   remove : (query) => {
     return model

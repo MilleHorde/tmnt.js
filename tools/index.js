@@ -71,13 +71,11 @@ let verifyJWTAsync = (token) => {
 let dto = (obj, path) => {
   let conf = constants.dto[path];
   let results = {};
-
   Object.keys(conf).forEach((key) => {
     if(conf[key] && obj[key]){
       results[key] = obj[key];
     }
   });
-
   return results;
 };
 

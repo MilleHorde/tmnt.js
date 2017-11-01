@@ -26,4 +26,9 @@ router.get('/', [tools.middlewares.verifyToken], (req, res) => {
   event.emit("users.get", res);
 });
 
+router.delete('/:id', [tools.middlewares.verifyToken], (req, res) => {
+  let query = {_id: req.params.id};
+  event.emit("users.remove", res, query);
+});
+
 module.exports = router;

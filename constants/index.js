@@ -12,7 +12,9 @@ module.exports = {
       image: true,
       ingredients: true,
       priceCts: true,
-      description: true
+      description: true,
+      history: true,
+      cook: true
     },
     ingredients: {
       _id: true,
@@ -52,7 +54,9 @@ module.exports = {
         required: ["post"]
       },
       ingredients: {
-        type: "array",
+        type: "object",
+        subtype: "string",
+        subformat: "^[a-f\\d]{24}$",
         required: ["post"]
       },
       priceCts: {

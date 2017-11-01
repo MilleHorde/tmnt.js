@@ -1,11 +1,12 @@
 "use strict";
 const mongoose = require('mongoose');
+const models = require('../models');
 
 let label = "Pizza";
 
 let schema = new mongoose.Schema({
   name: {type: String, unique: true},
-  image: { data: Buffer, contentType: String },
+  image: {type: String},
   ingredients: [{type: mongoose.Schema.Types.ObjectId, ref: 'Ingredient'}],
   priceCts: Number,
   description: {type: String, maxLength: 500},
@@ -25,7 +26,7 @@ let methods = {
   findByIdAndPopulate : (id) => {
     return model
       .findById(id)
-      .populate();
+      .populate("ingredients cook history");
   },
   find : (query) => {
     return model
@@ -34,16 +35,17 @@ let methods = {
   findAndPopulate : (query) => {
     return model
       .find(query)
-      .populate();
+      .populate("ingredients cook history");
   },
   create : (schema) => {
     let tmp = new model(schema);
     return tmp
       .save();
   },
-  update : (query, schema) => {
+  update : (query, schema, options) => {
+    schema.updated = Date.now();
     return model
-      .update(query, schema);
+      .findOneAndUpdate(query, schema, options);
   },
   remove : (query) => {
     return model
