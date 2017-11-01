@@ -1,5 +1,5 @@
 "use strict";
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 let label = "Pizza";
 
@@ -11,7 +11,6 @@ let schema = new mongoose.Schema({
   description: {type: String, maxLength: 500},
   created: {type: Date, default: Date.now()},
   updated: {type: Date, default: Date.now()},
-  deleted: Date,
   cook: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   history: [{type: mongoose.Schema.Types.ObjectId, ref: 'History'}]
 });
@@ -22,6 +21,11 @@ let methods = {
   findById : (id) => {
     return model
       .findById(id);
+  },
+  findByIdAndPopulate : (id) => {
+    return model
+      .findById(id)
+      .populate();
   },
   find : (query) => {
     return model

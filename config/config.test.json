@@ -4,5 +4,7 @@
     "name": "tmnt"
   },
   "title": "TMNT Pizzas TEST",
-  "port": "3001"
+  "port": "3011",
+  "saltPassword": "tmnt.js",
+  "secretJWT": "tmnt.js"
 }

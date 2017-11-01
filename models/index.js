@@ -11,10 +11,8 @@ exports.debug = (value) => {
 // Load all files under server/db/schemas/ and create mongoose schema
 let loadModels = (app, options) => {
   return new Promise((resolve, reject) => {
-    let path = __dirname;
-
     if (options.verbose !== false) {
-      console.log('Loading MODELS');
+      console.info('Loading MODELS');
     }
 
     fs.readdir(__dirname, (err, files) => {
@@ -24,7 +22,7 @@ let loadModels = (app, options) => {
       files.forEach((file) => {
         if (file !== "index.js") {
           let module = require(__dirname+'/'+file);
-          console.log('    MODEL: ' + module.label);
+          console.info('    MODEL: ' + module.label);
           exports[module.label] = module.methods;
         }
       })
@@ -39,11 +37,11 @@ let connect = (app) => {
     mongoose.Promise = global.Promise;
     return mongoose.connect('mongodb://' + config.database.host + '/' + config.database.name, {useMongoClient: true})
       .then(() => {
-        console.log("connection with mongoDB established")
+        console.info("connection with mongoDB established")
         resolve();
       })
       .catch((err)=>{
-        console.log(err);
+        console.error(err);
         process.exit(1)
         reject(err)
       });

@@ -8,11 +8,12 @@
   "license": "MIT",
   "scripts": {
     "start": "node server.js",
-    "test": "./node_modules/mocha/bin/mocha -R"
+    "test": "./node_modules/mocha/bin/mocha --recursive test"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
+    "crypto": "^1.0.1",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
     "http": "^0.0.0",
@@ -24,6 +25,8 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "jsonwebtoken": "^8.1.0",
     "mocha": "^4.0.1"
   }
 }

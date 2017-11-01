@@ -1,5 +1,5 @@
 "use strict";
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 let label = "History";
 
@@ -7,8 +7,7 @@ let schema = new mongoose.Schema({
   message: {type: String},
   userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   created: {type: Date, default: Date.now()},
-  updated: {type: Date, default: Date.now()},
-  deleted: Date
+  updated: {type: Date, default: Date.now()}
 });
 
 let model = mongoose.model(label, schema);

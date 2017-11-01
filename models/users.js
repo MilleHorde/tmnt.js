@@ -1,18 +1,19 @@
 "use strict";
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const tools = require('../tools');
+const crypto = require('crypto');
+const config = require('../config');
 
 let label = "User";
 
 let schema = new mongoose.Schema({
   firstName: String,
   lastName: String,
-  email: {type: String},
+  email: {type: String, unique: true},
   password: String,
-  login: String,
   token: String,
   created: {type: Date, default: Date.now()},
-  updated: {type: Date, default: Date.now()},
-  deleted: Date
+  updated: {type: Date, default: Date.now()}
 });
 
 let model = mongoose.model(label, schema);
@@ -31,14 +32,19 @@ let methods = {
       .find(query)
       .populate();
   },
+  findByIdAndPopulate : (id) => {
+    return model
+      .findById(id)
+      .populate();
+  },
   create : (schema) => {
     let tmp = new model(schema);
     return tmp
       .save();
   },
-  update : (query, schema) => {
+  update : (query, schema, options) => {
     return model
-      .update(query, schema);
+      .findOneAndUpdate(query, schema, options);
   },
   remove : (query) => {
     return model
@@ -47,6 +53,52 @@ let methods = {
   findOne : (query) => {
     return model
       .findOne(query);
+  },
+  specials : {
+    signup : (schema) => {
+      let newUser = new model(schema);
+      newUser.password = crypto.createHash('sha512').update(schema.password).update(config.saltPassword).digest("hex");
+      return tools.generateToken(newUser._id.toString())
+        .then((tokenObj) => {
+          newUser.token = tokenObj.token;
+          return newUser.save();
+        })
+        .then(() => {
+          return new Promise((resolve, reject) => {
+            resolve(newUser.token);
+          })
+        })
+    },
+    signin : (data) => {
+      return methods.findOne({email :data.email})
+        .then((user) => {
+          return new Promise((resolve, reject) => {
+            let newHash = crypto.createHash('sha512').update(data.password).update(config.saltPassword).digest("hex");
+            if(newHash !== user.password){
+              reject("Password not good")
+            }
+            resolve(user);
+          });
+        })
+        .then((user) => {
+          console.log(user);
+          return tools.verifyJWTAsync(user.token)
+        })
+        .catch((err) => {
+          if(err.name === "TokenExpiredError"){
+            return tools.generateToken((user._id));
+          }
+          throw err
+        })
+        .then((tokenObj) => {
+          return methods.update({_id: tokenObj.id}, {$set: {token: tokenObj.token}})
+            .then(() => {
+              return new Promise((resolve, reject) => {
+                resolve(tokenObj.token);
+              })
+            })
+        })
+    }
   }
 };
 

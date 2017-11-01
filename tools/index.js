@@ -1,5 +1,8 @@
 "use strict";
-const logger = require('morgan');
+const jwt = require('jsonwebtoken');
+const config = require('../config');
+const middlewares = require('./middlewares');
+const constants = require('../constants');
 
 let normalizePort = (val) => {
   let port = parseInt(val, 10);
@@ -39,11 +42,51 @@ let onListening = (server) => {
   let bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  logger('Listening on ' + bind);
+  console.info('Listening on ' + bind);
+};
+
+let generateToken = (id) => {
+  return new Promise((resolve, reject) => {
+    jwt.sign({id: id}, config.secretJWT, {expiresIn: '7d', algorithm: 'HS512'}, (err, token) => {
+      if (err) {
+        reject(err);
+      }
+      resolve({id: id, token: token});
+    })
+  })
+};
+
+let verifyJWTAsync = (token) => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, config.secretJWT, {algorithms: ['HS512']}, (err, decoded) => {
+      if (err) {
+        reject(err);
+      }
+      decoded.token = token;
+      resolve(decoded);
+    })
+  });
+};
+
+let dto = (obj, path) => {
+  let conf = constants.dto[path];
+  let results = {};
+
+  Object.keys(conf).forEach((key) => {
+    if(conf[key] && obj[key]){
+      results[key] = obj[key];
+    }
+  });
+
+  return results;
 };
 
 module.exports = {
   normalizePort,
   onError,
-  onListening
+  onListening,
+  generateToken,
+  verifyJWTAsync,
+  dto,
+  middlewares: middlewares
 };

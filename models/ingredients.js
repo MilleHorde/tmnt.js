@@ -1,5 +1,5 @@
 "use strict";
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 let label = "Ingredient";
 
@@ -8,8 +8,7 @@ let schema = new mongoose.Schema({
   weight: Number,
   priceCts: Number,
   created: {type: Date, default: Date.now()},
-  updated: {type: Date, default: Date.now()},
-  deleted: Date
+  updated: {type: Date, default: Date.now()}
 });
 
 let model = mongoose.model(label, schema);
