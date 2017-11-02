@@ -28,7 +28,7 @@ jobs:
 
       - run: yarn install
       - run: mkdir data
-      - run: mongod --bind_ip=$IP --dbpath=data --nojournal --rest "$@"
+      - run: sudo service mongod restart
 
       - save_cache:
           paths:
