@@ -40,5 +40,6 @@ jobs:
           environment:
             MOCHA_FILE: ~/test-results.xml
           when: always
+      -run: cat ~/test-results.xml
       - store_test_results:
-          path: ~/
+          path: ~/test-results.xml
