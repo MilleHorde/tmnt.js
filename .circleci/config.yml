@@ -27,6 +27,8 @@ jobs:
           - v1-dependencies-
 
       - run: yarn install
+      - run: mkdir data
+      - run: mongod --bind_ip=$IP --dbpath=data --nojournal --rest "$@"
 
       - save_cache:
           paths:
