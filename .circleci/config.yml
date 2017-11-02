@@ -41,6 +41,7 @@ jobs:
           environment:
             MOCHA_FILE: junit/test-results.xml
           when: always
+      - run: cat ~/junit/test-results.xml
       - store_test_results:
           path: ~/junit
       - store_artifacts:
