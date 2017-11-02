@@ -8,7 +8,7 @@ const tools = require('../tools');
 
 chai.use(chaiHttp);
 
-describe('Routes -- TMNT.js', () => {
+describe('Routes --', () => {
   before(() => {
     let self = this;
     self.api = chai.request(server);

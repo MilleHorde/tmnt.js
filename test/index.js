@@ -1,6 +1,14 @@
 "use strict";
+
 if(process.env.NODE_ENV !== 'test'){
   process.env.NODE_ENV = 'test';
 }
 
-require('../controllers/controllersTest');
+describe("### TMNT.js tests ###", ()=>{
+
+  require('../controllers/controllersTest');
+
+  after(()=>{
+    process.exit(0);
+  });
+});
