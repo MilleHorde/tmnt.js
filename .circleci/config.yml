@@ -35,12 +35,13 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: mkdir ~/tests
+      - run: mkdir ~/junit
       - run:
           command: yarn test-ci
           environment:
-            MOCHA_FILE: tests/test-results.xml
+            MOCHA_FILE: junit/test-results.xml
           when: always
-      - run: cat ~/tests/test-results.xml
       - store_test_results:
-          path: ~/tests/test-results.xml
+          path: ~/junit
+      - store_artifacts:
+          path: ~/junit
