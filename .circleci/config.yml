@@ -38,7 +38,7 @@ jobs:
       - run:
           command: yarn test-ci
           environment:
-            MOCHA_FILE: ~/test-results.xml
+            MOCHA_FILE: test-results.xml
           when: always
       - run: cat ~/test-results.xml
       - store_test_results:
