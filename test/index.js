@@ -6,9 +6,10 @@ if(process.env.NODE_ENV !== 'test'){
 
 describe("### TMNT.js tests ###", ()=>{
 
+  // tests about controllers/routes
   require('../controllers/controllersTest');
 
-  after(()=>{
-    process.exit(0);
-  });
+  // tests about tools
+  require('../tools/toolsTest');
+
 });
