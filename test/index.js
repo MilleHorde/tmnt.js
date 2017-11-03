@@ -8,7 +8,5 @@ describe("### TMNT.js tests ###", ()=>{
 
   require('../controllers/controllersTest');
 
-  after(()=>{
-    process.exit(0);
-  });
 });
+

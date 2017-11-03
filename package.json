@@ -8,8 +8,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node server.js",
-    "test": "./node_modules/mocha/bin/mocha --recursive test --reporter list",
-    "test-ci": "./node_modules/mocha/bin/mocha test --reporter mocha-junit-reporter"
+    "test": "./node_modules/mocha/bin/mocha --recursive test --reporter spec --exit",
+    "test-ci": "./node_modules/mocha/bin/mocha test --reporter mocha-junit-reporter --exit"
   },
   "dependencies": {
     "body-parser": "^1.18.2",

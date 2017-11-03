@@ -56,6 +56,19 @@ describe('Routes --', () => {
             })
           })
       });
+
+      it("should return empty array if no users", () => {
+        let self = this;
+        return models.User.remove({})
+          .then(()=>{
+            return self.api
+              .get('/users')
+          })
+          .then((res) => {
+            expect(res.statusCode).to.eql(200);
+            expect(res.body.response.length).to.eql(0);
+          })
+      });
     });
 
     describe('/signup -- POST tests', () => {
@@ -537,10 +550,63 @@ describe('Routes --', () => {
 
 describe('/ingredients', () => {
   before(() => {
-    return models.Ingredient.remove({});
+    return models.User.remove({})
+    .then(()=>{
+      return models.Ingredient.remove({});
+    })
   });
 
   describe('/ -- GET tests', () => {
+    before(() => {
+      let self = this;
+      self.ingredient1 = {
+        name: "ingredient1",
+        weight: 200,
+        priceCts: 200
+      };
+      self.ingredient2 = {
+        name: "ingredient2",
+        weight: 150,
+        priceCts: 150
+      };
+
+      return models.Ingredient.remove({})
+        .then((ingredient) => {
+          return models.Ingredient.create(self.ingredient1);
+        })
+        .then((ingredient) => {
+          return models.Ingredient.create(self.ingredient2);
+        })
+    });
+
+    it("should return two ingredients", () => {
+      let self = this;
+      return self.api
+        .get('/ingredients')
+        .then((res) => {
+          expect(res.statusCode).to.eql(200);
+          expect(res.body.response.length).to.eql(2);
+          res.body.response.forEach((ingredient, index) => {
+            index++;
+            expect(ingredient.name).to.eql(self["ingredient" + index].name);
+            expect(ingredient.weight).to.eql(self["ingredient" + index].weight);
+            expect(ingredient.priceCts).to.eql(self["ingredient" + index].priceCts);
+          })
+        })
+    });
+
+    it("should return empty array if no ingredients", () => {
+      let self = this;
+      return models.Ingredient.remove({})
+        .then(()=>{
+          return self.api
+            .get('/ingredients')
+        })
+        .then((res) => {
+          expect(res.statusCode).to.eql(200);
+          expect(res.body.response.length).to.eql(0);
+        })
+    });
 
   });
 
@@ -560,7 +626,13 @@ describe('/ingredients', () => {
 
 describe('/pizzas', () => {
   before(() => {
-    return models.Pizza.remove({});
+    return models.Pizza.remove({})
+      .then(()=>{
+        return models.Ingredient.remove({});
+      })
+      .then(()=>{
+        return models.User.remove({});
+      })
   });
 
   describe('/ -- GET tests', () => {
