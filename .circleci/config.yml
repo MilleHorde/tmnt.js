@@ -43,7 +43,7 @@ jobs:
       - run:
           command: yarn test-ci
           environment:
-            MOCHA_FILE: junit/test-results.xml
+            MOCHA_FILE: junit/test-results
           when: always
       - store_test_results:
           path: ~/junit
