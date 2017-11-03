@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const config = require('../config');
 const middlewares = require('./middlewares');
 const constants = require('../constants');
+const logger = require('morgan');
 
 let normalizePort = (val) => {
   let port = parseInt(val, 10);
@@ -42,7 +43,8 @@ let onListening = (server) => {
   let bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  console.info('Listening on ' + bind);
+  logger('Listening on ' + bind);
+  return 'Listening on ' + bind;
 };
 
 let generateToken = (id) => {

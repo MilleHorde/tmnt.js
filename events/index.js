@@ -11,7 +11,9 @@ Event.on("pizzas.get", (res) => {
   return models.Pizza.findAndPopulate({})
     .then((pizzas) => {
       let results = pizzas.map((pizza) => {
-        pizza.cook = tools.dto(pizza.cook, "users");
+        if (pizza.cook) {
+          pizza.cook = tools.dto(pizza.cook, "users");
+        }
         pizza.ingredients = pizza.ingredients.map((ingredient) => {
           return tools.dto(ingredient, "ingredients");
         });
@@ -38,7 +40,9 @@ Event.on("pizzas.add", (res, req) => {
       return models.Pizza.findByIdAndPopulate(pizza._id);
     })
     .then((pizza) => {
-      pizza.cook = tools.dto(pizza.cook, "users");
+      if (pizza.cook) {
+        pizza.cook = tools.dto(pizza.cook, "users");
+      }
       pizza.ingredients = pizza.ingredients.map((ingredient) => {
         return tools.dto(ingredient, "ingredients");
       });
@@ -52,7 +56,9 @@ Event.on("pizzas.add", (res, req) => {
 Event.on("pizzas.get.id", (res, id) => {
   return models.Pizza.findByIdAndPopulate(id)
     .then((pizza) => {
-      pizza.cook = tools.dto(pizza.cook, "users");
+      if (pizza.cook) {
+        pizza.cook = tools.dto(pizza.cook, "users");
+      }
       pizza.ingredients = pizza.ingredients.map((ingredient) => {
         return tools.dto(ingredient, "ingredients");
       });
@@ -67,7 +73,9 @@ Event.on("pizzas.get.custom", (res, query) => {
   return models.Pizza.find(query)
     .then((pizzas) => {
       let results = pizzas.map((pizza) => {
-        pizza.cook = tools.dto(pizza.cook, "users");
+        if (pizza.cook) {
+          pizza.cook = tools.dto(pizza.cook, "users");
+        }
         pizza.ingredients = pizza.ingredients.map((ingredient) => {
           return tools.dto(ingredient, "ingredients");
         });
@@ -84,15 +92,17 @@ Event.on("pizzas.update", (res, query, req) => {
   let data = req.validated;
 
   return models.History.create({message: "Update", userId: req.user._id})
-    .then((history)=>{
-      data.$push = {history : history._id};
+    .then((history) => {
+      data.$push = {history: history._id};
       return models.Pizza.update(query, data, {new: true})
     })
     .then((pizza) => {
       return models.Pizza.findByIdAndPopulate(pizza._id);
     })
     .then((pizza) => {
-      pizza.cook = tools.dto(pizza.cook, "users");
+      if (pizza.cook) {
+        pizza.cook = tools.dto(pizza.cook, "users");
+      }
       pizza.ingredients = pizza.ingredients.map((ingredient) => {
         return tools.dto(ingredient, "ingredients");
       });
