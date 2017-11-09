@@ -4,6 +4,7 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const index = require('./controllers/index');
 const pizzas = require('./controllers/pizzas');
@@ -22,6 +23,8 @@ let port = tools.normalizePort(config.port);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+//allow CORS
+app.use(cors());
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 if (process.env.NODE_ENV !== 'test') {
