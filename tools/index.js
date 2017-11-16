@@ -4,6 +4,7 @@ const config = require('../config');
 const middlewares = require('./middlewares');
 const constants = require('../constants');
 const logger = require('morgan');
+const socket = require('./socket');
 
 let normalizePort = (val) => {
   let port = parseInt(val, 10);
@@ -88,5 +89,6 @@ module.exports = {
   generateToken,
   verifyJWTAsync,
   dto,
+  socket: socket,
   middlewares: middlewares
 };

@@ -46,6 +46,9 @@ Event.on("pizzas.add", (res, req) => {
       pizza.ingredients = pizza.ingredients.map((ingredient) => {
         return tools.dto(ingredient, "ingredients");
       });
+
+      tools.socket.alertElse(pizza, "pizza.new");
+
       return res.json({response: tools.dto(pizza, "pizzas")});
     })
     .catch((err) => {
@@ -106,6 +109,9 @@ Event.on("pizzas.update", (res, query, req) => {
       pizza.ingredients = pizza.ingredients.map((ingredient) => {
         return tools.dto(ingredient, "ingredients");
       });
+
+      tools.socket.alertElse(pizza, "pizza.update");
+
       return res.json({response: tools.dto(pizza, "pizzas")});
     })
     .catch((err) => {
@@ -229,7 +235,11 @@ Event.on("ingredients.add", (res, req) => {
   let data = req.validated;
   return models.Ingredient.create(data)
     .then((ingredient) => {
-      return res.json({response: tools.dto(ingredient, "ingredients")});
+      let ingredientFiltered = tools.dto(ingredient, "ingredients");
+
+      tools.socket.alertElse(ingredientFiltered, "ingredient.new");
+
+      return res.json({response: ingredientFiltered});
     })
     .catch((err) => {
       return res.status(500).json({"Error": err.message || err})
@@ -263,7 +273,11 @@ Event.on("ingredients.update", (res, query, req) => {
   let data = req.validated;
   return models.Ingredient.update(query, data, {new: true})
     .then((ingredient) => {
-      return res.json({response: tools.dto(ingredient, "ingredients")});
+      let ingredientFiltered = tools.dto(ingredient, "ingredients");
+
+      tools.socket.alertElse(ingredientFiltered, "ingredient.update");
+
+      return res.json({response: ingredientFiltered});
     })
     .catch((err) => {
       return res.status(500).json({"Error": err.message || err})
