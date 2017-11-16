@@ -3,8 +3,11 @@
     "host": "127.0.0.1",
     "name": "tmnt"
   },
-  "title": "TMNT Pizzas",
+  "title": "TMNT Pizzas API",
   "port": "3010",
   "saltPassword": "tmntjs",
-  "secretJWT": "tmntjs"
+  "secretJWT": "tmntjs",
+  "socket": {
+    "host" : "localhost:3010"
+  }
 }

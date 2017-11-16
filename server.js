@@ -67,6 +67,7 @@ app.set('port', port);
  */
 
 let server = http.createServer(app);
+tools.socket.setApp(server);
 
 /**
  * Listen on provided port, on all network interfaces.
