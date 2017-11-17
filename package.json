@@ -31,6 +31,7 @@
     "chai-http": "^3.0.0",
     "jsonwebtoken": "^8.1.0",
     "mocha": "^4.0.1",
-    "mocha-junit-reporter": "^1.15.0"
+    "mocha-junit-reporter": "^1.15.0",
+    "socket.io-client": "^2.0.4"
   }
 }

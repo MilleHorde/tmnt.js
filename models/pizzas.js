@@ -6,7 +6,7 @@ let label = "Pizza";
 
 let schema = new mongoose.Schema({
   name: {type: String, unique: true},
-  image: {type: String},
+  image: {type: Buffer},
   ingredients: [{type: mongoose.Schema.Types.ObjectId, ref: 'Ingredient'}],
   priceCts: Number,
   description: {type: String, maxLength: 500},
@@ -39,6 +39,9 @@ let methods = {
   },
   create : (schema) => {
     let tmp = new model(schema);
+    if(tmp.image){
+      tmp.image = new Buffer(tmp.image, 'base64');
+    }
     return tmp
       .save();
   },

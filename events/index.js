@@ -47,7 +47,7 @@ Event.on("pizzas.add", (res, req) => {
         return tools.dto(ingredient, "ingredients");
       });
 
-      tools.socket.alertElse(pizza, "pizza.new");
+      tools.socket.alertElse(pizza, "add", "pizza");
 
       return res.json({response: tools.dto(pizza, "pizzas")});
     })
@@ -110,7 +110,7 @@ Event.on("pizzas.update", (res, query, req) => {
         return tools.dto(ingredient, "ingredients");
       });
 
-      tools.socket.alertElse(pizza, "pizza.update");
+      tools.socket.alertElse(pizza, "update", "pizza");
 
       return res.json({response: tools.dto(pizza, "pizzas")});
     })
@@ -122,6 +122,8 @@ Event.on("pizzas.update", (res, query, req) => {
 Event.on("pizzas.remove", (res, query) => {
   return models.Pizza.remove(query)
     .then(() => {
+      tools.socket.alertElse(query._id, "remove", "pizza");
+
       return res.json({response: true});
     })
     .catch((err) => {
@@ -237,7 +239,7 @@ Event.on("ingredients.add", (res, req) => {
     .then((ingredient) => {
       let ingredientFiltered = tools.dto(ingredient, "ingredients");
 
-      tools.socket.alertElse(ingredientFiltered, "ingredient.new");
+      tools.socket.alertElse(ingredientFiltered, "add", "ingredient");
 
       return res.json({response: ingredientFiltered});
     })
@@ -275,7 +277,7 @@ Event.on("ingredients.update", (res, query, req) => {
     .then((ingredient) => {
       let ingredientFiltered = tools.dto(ingredient, "ingredients");
 
-      tools.socket.alertElse(ingredientFiltered, "ingredient.update");
+      tools.socket.alertElse(ingredientFiltered, "update", "ingredient");
 
       return res.json({response: ingredientFiltered});
     })
@@ -287,6 +289,8 @@ Event.on("ingredients.update", (res, query, req) => {
 Event.on("ingredients.remove", (res, query) => {
   return models.Ingredient.remove(query)
     .then(() => {
+      tools.socket.alertElse(query._id, "remove", "ingredient");
+
       return res.json({response: true});
     })
     .catch((err) => {
