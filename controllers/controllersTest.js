@@ -5,6 +5,9 @@ const chaiHttp = require('chai-http');
 const server = require('../server');
 const expect = chai.expect;
 const tools = require('../tools');
+const config = require('../config');
+
+const socketClient = require('socket.io-client');
 
 chai.use(chaiHttp);
 
@@ -734,7 +737,7 @@ describe('/ingredients', () => {
         })
     });
 
-    it("should create one ingredient and return pizza created", () => {
+    it("should create one ingredient and return ingredient created", () => {
       let self = this;
       return self.api
         .post('/ingredients/add')
@@ -1268,7 +1271,7 @@ describe('/pizzas', () => {
           let pizza = res.body.response;
           expect(res.statusCode).to.eql(200);
           expect(pizza.name).to.eql(self.pizza1.name);
-          expect(pizza.image).to.eql(self.pizza1.image);
+          expect(new Buffer(pizza.image.data).toString()).to.eql(self.pizza1.image);
           expect(pizza.description).to.eql(self.pizza1.description);
           expect(pizza.ingredients.length).to.eql(self.pizza1.ingredients.length);
           expect(pizza.cook._id.toString()).to.eql(self.pizza1.cook);
@@ -1455,7 +1458,7 @@ describe('/pizzas', () => {
         .then((res) => {
           expect(res.status).to.eql(200);
           expect(res.body.response.description).to.eql("toto");
-          expect(res.body.response.image).to.eql("tata");
+          expect(new Buffer(res.body.response.image.data).toString()).to.eql("tata");
         })
         .catch((err) => {
           throw (err.response) ? Error(err.response.body.Error) : err;
@@ -1733,6 +1736,315 @@ describe('/pizzas', () => {
           expect(err.status).to.eql(403);
           expect(err.response.body).to.eql({"error": "Token missing"});
         })
+    });
+  });
+
+  describe('Socket tests -- WITH INGREDIENTS ONLY BECAUSE SAME ON PIZZAS', () => {
+    describe('On add', () => {
+      before(() => {
+        let self = this;
+        self.io = socketClient.connect(config.socket.host);
+        self.user1 = {
+          firstName: "test1",
+          lastName: "test1",
+          email: "test1@test.com",
+          password: "Testtest1"
+        };
+        self.ingredient1 = {
+          name: "ingredient1",
+          weight: 150,
+          priceCts: 150
+        };
+        self.ingredient2 = {
+          name: "ingredient2",
+          weight: 180,
+          priceCts: 180
+        };
+
+        return Promise.all([
+          models.Pizza.remove({}),
+          models.User.remove({}),
+          models.Ingredient.remove({})
+        ])
+
+          .then(() => {
+            return models.User.specials.signup(self.user1)
+          })
+          .then((token) => {
+            return tools.verifyJWTAsync(token);
+          })
+          .then((decoded) => {
+            self.user1._id = decoded.id;
+            return self.api.post('/users/signin')
+              .send({
+                email: self.user1.email,
+                password: self.user1.password
+              })
+          })
+          .then((res) => {
+            self.user1.token = res.body.response;
+          })
+          .catch((err) => {
+            throw (err.response) ? Error(err.response.body.Error) : err;
+          })
+      });
+
+      it("should emit to all client the add", (done) => {
+        let self = this;
+        self.io.on('ingredient', (ingredient) => {
+          expect(ingredient.type).to.eql('add');
+          done();
+        });
+        self.api
+          .post('/ingredients/add')
+          .send(self.ingredient1)
+          .set('Authorization', self.user1.token)
+          .then((res) => {
+            let ingredient = res.body.response;
+            expect(res.statusCode).to.eql(200);
+            expect(ingredient.name).to.eql(self.ingredient1.name);
+            expect(ingredient.weight).to.eql(self.ingredient1.weight);
+            expect(ingredient.priceCts).to.eql(self.ingredient1.priceCts);
+          })
+          .catch((err) => {
+            throw (err.response) ? Error(err.response.body.Error) : err;
+          })
+
+      });
+
+      it("should not emit to all client if add not made", (done) => {
+        let self = this;
+        self.io.on('ingredient', (ingredient) => {
+          throw "Error: socket received but not expected";
+        });
+        self.api
+          .post('/ingredients/add')
+          .send(self.ingredient1)
+          .set('Authorization', self.user1.token)
+          .then((res) => {
+            let ingredient = res.body.response;
+            expect(res.statusCode).to.eql(200);
+            expect(ingredient.name).to.eql(self.ingredient1.name);
+            expect(ingredient.weight).to.eql(self.ingredient1.weight);
+            expect(ingredient.priceCts).to.eql(self.ingredient1.priceCts);
+          })
+          .catch((err) => {
+            return;
+          })
+          .then(()=>{
+            setTimeout(()=>{
+              done();
+            }, 500)
+          })
+
+      });
+
+      after(() => {
+        let self = this;
+        self.io.disconnect();
+      });
+    });
+
+    describe('On update', () => {
+      before(() => {
+        let self = this;
+        self.io = socketClient.connect(config.socket.host);
+        self.user1 = {
+          firstName: "test1",
+          lastName: "test1",
+          email: "test1@test.com",
+          password: "Testtest1"
+        };
+        self.ingredient1 = {
+          name: "ingredient1",
+          weight: 200,
+          priceCts: 200
+        };
+        self.ingredient2 = {
+          name: "ingredient2",
+          weight: 150,
+          priceCts: 150
+        };
+
+        return Promise.all([
+          models.Pizza.remove({}),
+          models.User.remove({}),
+          models.Ingredient.remove({})
+        ])
+          .then(() => {
+            return models.User.specials.signup(self.user1)
+          })
+          .then((user) => {
+            self.user1._id = user._id;
+            return models.Ingredient.create(self.ingredient1);
+          })
+          .then((ingredient) => {
+            self.ingredient1._id = ingredient._id;
+            return models.Ingredient.create(self.ingredient2);
+          })
+          .then((ingredient) => {
+            self.ingredient2._id = ingredient._id;
+            return self.api.post('/users/signin')
+              .send({
+                email: self.user1.email,
+                password: self.user1.password
+              })
+          })
+          .then((res) => {
+            self.user1.token = res.body.response;
+          })
+          .catch((err) => {
+            throw (err.response) ? Error(err.response.body.Error) : err;
+          })
+      });
+
+      it("should emit to all client the update", (done) => {
+        let self = this;
+        self.io.on('ingredient', (ingredient) => {
+          expect(ingredient.type).to.eql('update');
+          done();
+        });
+        self.api
+          .put('/ingredients/' + self.ingredient1._id)
+          .send({
+            name: self.ingredient1.name + " test",
+            weight: self.ingredient1.weight + 1,
+            priceCts: self.ingredient1.priceCts + 1
+          })
+          .set('Authorization', self.user1.token)
+          .then((res) => {
+            expect(res.status).to.eql(200);
+          })
+          .catch((err) => {
+            throw (err.response) ? Error(err.response.body.Error) : err;
+          })
+      });
+
+      it("should not emit to all client if update not made", (done) => {
+        let self = this;
+        self.io.on('ingredient', (ingredient) => {
+          throw "Error: socket received but not expected";
+        });
+        self.api
+          .put('/ingredients/' + self.ingredient1._id)
+          .send({
+            name: self.ingredient1.name + " test",
+            weight: self.ingredient1.weight + 1,
+            priceCts: self.ingredient1.priceCts + 1
+          })
+          .then((res) => {
+            expect(res.status).to.eql(200);
+          })
+          .catch((err) => {
+            return;
+          })
+          .then(() => {
+            setTimeout(() => {
+              done();
+            }, 500);
+          })
+      });
+
+      after(() => {
+        let self = this;
+        self.io.disconnect();
+      });
+    });
+
+    describe('On remove', () => {
+      before(() => {
+        let self = this;
+        self.io = socketClient.connect(config.socket.host);
+        self.user1 = {
+          firstName: "test1",
+          lastName: "test1",
+          email: "test1@test.com",
+          password: "Testtest1"
+        };
+        self.ingredient1 = {
+          name: "ingredient1",
+          weight: 200,
+          priceCts: 200
+        };
+        self.ingredient2 = {
+          name: "ingredient2",
+          weight: 150,
+          priceCts: 150
+        };
+
+        return Promise.all([
+          models.Pizza.remove({}),
+          models.User.remove({}),
+          models.Ingredient.remove({})
+        ])
+          .then(() => {
+            return models.User.specials.signup(self.user1)
+          })
+          .then((user) => {
+            self.user1._id = user._id;
+            return models.Ingredient.create(self.ingredient1);
+          })
+          .then((ingredient) => {
+            self.ingredient1._id = ingredient._id;
+            return models.Ingredient.create(self.ingredient2);
+          })
+          .then((ingredient) => {
+            self.ingredient2._id = ingredient._id;
+            return self.api.post('/users/signin')
+              .send({
+                email: self.user1.email,
+                password: self.user1.password
+              })
+          })
+          .then((res) => {
+            self.user1.token = res.body.response;
+          })
+          .catch((err) => {
+            throw (err.response) ? Error(err.response.body.Error) : err;
+          })
+      });
+
+      it("should emit to all client the remove", (done) => {
+        let self = this;
+        self.io.on('ingredient', (ingredient) => {
+          expect(ingredient.type).to.eql('remove');
+          done();
+        });
+        self.api
+          .del('/ingredients/' + self.ingredient1._id)
+          .set('Authorization', self.user1.token)
+          .then((res) => {
+            expect(res.statusCode).to.eql(200);
+          })
+          .catch((err) => {
+            throw (err.response) ? Error(err.response.body.Error) : err;
+          })
+      });
+
+      it("should not emit to all client if remove not made", (done) => {
+        let self = this;
+        self.io.on('ingredient', (ingredient) => {
+          throw "Error: socket received but not expected";
+        });
+        self.api
+          .del('/ingredients/' + self.ingredient1._id)
+          .then((res) => {
+            expect(res.statusCode).to.eql(200);
+          })
+          .catch((err) => {
+            return;
+          })
+          .then(() => {
+            setTimeout(() => {
+              done();
+            }, 500);
+          })
+      });
+
+      after(() => {
+        let self = this;
+        self.io.disconnect();
+      });
     });
   });
 

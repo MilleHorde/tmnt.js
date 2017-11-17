@@ -6,5 +6,8 @@
   "title": "TMNT Pizzas TEST",
   "port": "3011",
   "saltPassword": "tmnt.js",
-  "secretJWT": "tmnt.js"
+  "secretJWT": "tmnt.js",
+  "socket": {
+    "host" : "http://localhost:3011"
+  }
 }
