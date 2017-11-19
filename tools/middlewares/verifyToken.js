@@ -3,6 +3,9 @@ const config = require('../../config');
 const models = require('../../models');
 const jwt = require('jsonwebtoken');
 
+//FUNCTION verifyJWTAsync
+//@param token token to verify
+//Verify if token is good
 let verifyJWTAsync = (token) => {
   return new Promise((resolve, reject) => {
     jwt.verify(token, config.secretJWT, { algorithms: ['HS512'] }, (err, decoded) => {
@@ -13,7 +16,12 @@ let verifyJWTAsync = (token) => {
     })
   });
 };
-
+//FUNCTION middleware
+//@param req
+//@param res
+//@param next
+//Get token from header or body and find user if exist
+//and put user founded in req.user
 let middleware = (req, res, next) => {
   let token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers['authorization'];
   if (token) {

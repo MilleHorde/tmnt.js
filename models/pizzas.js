@@ -28,9 +28,9 @@ let methods = {
       .findById(id)
       .populate("ingredients cook history");
   },
-  find : (query) => {
+  find : (query, options = {}) => {
     return model
-      .find(query);
+      .find(query, null, options);
   },
   findAndPopulate : (query) => {
     return model

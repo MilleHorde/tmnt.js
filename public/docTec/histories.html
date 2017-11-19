@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>histories.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="histories.html">
+                  histories.js
+                </a>
+              
+                
+                <a class="source" href="index.html">
+                  index.js
+                </a>
+              
+                
+                <a class="source" href="ingredients.html">
+                  ingredients.js
+                </a>
+              
+                
+                <a class="source" href="pizzas.html">
+                  pizzas.js
+                </a>
+              
+                
+                <a class="source" href="users.html">
+                  users.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>histories.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-meta">"use strict"</span>;
+<span class="hljs-keyword">const</span> mongoose = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mongoose'</span>);
+
+<span class="hljs-keyword">let</span> label = <span class="hljs-string">"History"</span>;
+
+<span class="hljs-keyword">let</span> schema = <span class="hljs-keyword">new</span> mongoose.Schema({
+  <span class="hljs-attr">message</span>: {<span class="hljs-attr">type</span>: <span class="hljs-built_in">String</span>},
+  <span class="hljs-attr">userId</span>: {<span class="hljs-attr">type</span>: mongoose.Schema.Types.ObjectId, <span class="hljs-attr">ref</span>: <span class="hljs-string">'User'</span>},
+  <span class="hljs-attr">created</span>: {<span class="hljs-attr">type</span>: <span class="hljs-built_in">Date</span>, <span class="hljs-attr">default</span>: <span class="hljs-built_in">Date</span>.now()},
+  <span class="hljs-attr">updated</span>: {<span class="hljs-attr">type</span>: <span class="hljs-built_in">Date</span>, <span class="hljs-attr">default</span>: <span class="hljs-built_in">Date</span>.now()}
+});
+
+<span class="hljs-keyword">let</span> model = mongoose.model(label, schema);
+
+<span class="hljs-keyword">let</span> methods = {
+  <span class="hljs-attr">findById</span> : <span class="hljs-function">(<span class="hljs-params">id</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> model
+      .findById(id);
+  },
+  <span class="hljs-attr">find</span> : <span class="hljs-function">(<span class="hljs-params">query</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> model
+      .find(query);
+  },
+  <span class="hljs-attr">findAndPopulate</span> : <span class="hljs-function">(<span class="hljs-params">query</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> model
+      .find(query)
+      .populate();
+  },
+  <span class="hljs-attr">create</span> : <span class="hljs-function">(<span class="hljs-params">schema</span>) =&gt;</span> {
+    <span class="hljs-keyword">let</span> tmp = <span class="hljs-keyword">new</span> model(schema);
+    <span class="hljs-keyword">return</span> tmp
+      .save();
+  },
+  <span class="hljs-attr">update</span> : <span class="hljs-function">(<span class="hljs-params">query, schema, options</span>) =&gt;</span> {
+    schema.updated = <span class="hljs-built_in">Date</span>.now();
+    <span class="hljs-keyword">return</span> model
+      .findOneAndUpdate(query, schema, options);
+  },
+  <span class="hljs-attr">remove</span> : <span class="hljs-function">(<span class="hljs-params">query</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> model
+      .remove(query);
+  },
+  <span class="hljs-attr">findOne</span> : <span class="hljs-function">(<span class="hljs-params">query</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> model
+      .findOne(query);
+  }
+};
+
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">label</span>: label,
+  <span class="hljs-attr">methods</span> : methods
+};</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -8,7 +8,7 @@ exports.debug = (value) => {
   mongoose.set('debug', value !== false);
 };
 
-// Load all files under server/db/schemas/ and create mongoose schema
+// Load all files under models/ and create mongoose schema and expose dao function
 let loadModels = (app, options) => {
   return new Promise((resolve, reject) => {
     if (options.verbose !== false) {

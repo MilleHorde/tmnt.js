@@ -1,3 +1,5 @@
+"use strict";
+//Require modules
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
@@ -5,13 +7,15 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const http = require('http');
 
+//Require controllers
 const index = require('./controllers/index');
 const pizzas = require('./controllers/pizzas');
 const users = require('./controllers/users');
 const ingredients = require('./controllers/ingredients');
 
-const http = require('http');
+//Require tools
 const config = require('./config');
 const tools = require('./tools');
 const events = require('./events');
@@ -27,6 +31,8 @@ app.set('view engine', 'pug');
 app.use(cors());
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+
+//Set up logger
 if (process.env.NODE_ENV !== 'test') {
   app.use(logger('dev'));
 }
@@ -39,6 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //Load Models
 require('./models').load(app, {useMongoClient: true});
 
+//Set up controllers to routes
 app.use('/', index);
 app.use('/pizzas', pizzas);
 app.use('/users', users);
@@ -62,16 +69,12 @@ app.use((err, req, res, next) => {
 
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
+//Create HTTP server
 
 let server = http.createServer(app);
 tools.socket.setApp(server);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+//Listen on provided port, on all network interfaces.
 
 server.listen(port);
 server.on('error', tools.onError);
