@@ -14,39 +14,39 @@ let schema = new mongoose.Schema({
 let model = mongoose.model(label, schema);
 
 let methods = {
-  findById : (id) => {
+  findById: (id) => {
     return model
       .findById(id);
   },
-  find : (query) => {
+  find: (query, options = {}) => {
     return model
-      .find(query);
+      .find(query, null, options);
   },
-  findAndPopulate : (query) => {
+  findAndPopulate: (query) => {
     return model
       .find(query)
       .populate();
   },
-  findByIdAndPopulate : (id) => {
+  findByIdAndPopulate: (id) => {
     return model
       .findById(id)
       .populate();
   },
-  create : (schema) => {
+  create: (schema) => {
     let tmp = new model(schema);
     return tmp
       .save();
   },
-  update : (query, schema, options) => {
+  update: (query, schema, options) => {
     schema.updated = Date.now();
     return model
       .findOneAndUpdate(query, schema, options);
   },
-  remove : (query) => {
+  remove: (query) => {
     return model
       .remove(query);
   },
-  findOne : (query) => {
+  findOne: (query) => {
     return model
       .findOne(query);
   }
@@ -54,5 +54,5 @@ let methods = {
 
 module.exports = {
   label: label,
-  methods : methods
+  methods: methods
 };

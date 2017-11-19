@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>pizzas.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="controllersTest.html">
+                  controllersTest.js
+                </a>
+              
+                
+                <a class="source" href="index.html">
+                  index.js
+                </a>
+              
+                
+                <a class="source" href="ingredients.html">
+                  ingredients.js
+                </a>
+              
+                
+                <a class="source" href="pizzas.html">
+                  pizzas.js
+                </a>
+              
+                
+                <a class="source" href="users.html">
+                  users.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>pizzas.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-meta">"use strict"</span>;
+<span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
+<span class="hljs-keyword">const</span> router = express.Router();
+<span class="hljs-keyword">const</span> config = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../config'</span>);
+<span class="hljs-keyword">const</span> event = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../singleton'</span>);
+<span class="hljs-keyword">const</span> tools = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../tools'</span>);
+
+<span class="hljs-comment">/**
+ * @api {post} /pizzas/add Add pizza
+ * @apiName AddPizza
+ * @apiGroup Pizzas
+ *
+ * @apiParam {String} name name of pizza
+ * @apiParam {Array} ingredients Objectid of ingredients of pizza
+ * @apiParam {String} image image of pizza
+ * @apiParam {String} description description of pizza
+ * @apiParam {Number} priceCts price of ingredient in cts
+ *
+ * @apiSuccess {Object} ingredient created.
+ */</span>
+router.post(<span class="hljs-string">'/add'</span>, [tools.middlewares.verifyToken, tools.middlewares.checkObject], (req, res) =&gt; {
+  event.emit(<span class="hljs-string">"pizzas.add"</span>, res, req);
+});
+
+<span class="hljs-comment">/**
+ * @api {get} /pizzas/:id Get one specific pizza
+ * @apiName GetPizzaById
+ * @apiGroup Pizzas
+ *
+ * @apiParam {ObjectId} id id of specific pizza
+ *
+ * @apiSuccess {Object} pizza wanted.
+ */</span>
+router.get(<span class="hljs-string">'/:id'</span>, [], (req, res) =&gt; {
+  event.emit(<span class="hljs-string">"pizzas.get.id"</span>, res, req.params.id);
+});
+
+<span class="hljs-comment">/**
+ * @api {put} /pizzas/:id Update one specific pizza
+ * @apiName UpdatePizza
+ * @apiGroup Pizzas
+ *
+ * @apiParam {ObjectId} id id of ingredient wanted
+ * @apiParam {String} [name] name of pizza
+ * @apiParam {String} [image] image of pizza
+ * @apiParam {Array} [ingredients] objectId of ingredients of pizza
+ * @apiParam {String} [description] description of pizza
+ * @apiParam {Number} [priceCts] price of pizza in cts
+ *
+ * @apiSuccess {Object} ingredient updated.
+ */</span>
+router.put(<span class="hljs-string">'/:id'</span>, [tools.middlewares.verifyToken, tools.middlewares.checkObject], (req, res) =&gt; {
+  <span class="hljs-keyword">let</span> query = {<span class="hljs-attr">_id</span>: req.params.id};
+  event.emit(<span class="hljs-string">"pizzas.update"</span>, res, query, req);
+});
+
+<span class="hljs-comment">/**
+ * @api {get} /pizzas/ Get all pizzas // search/sort in all pizzas
+ * @apiName GetAllPizzasFiltered
+ * @apiGroup Pizzas
+ *
+ * @apiParam {String} [name] name of pizzas
+ * @apiParam {String} [description] description of pizzas
+ * @apiParam {Number} [priceCts] price of pizzas in cts
+ * @apiParam {String} [sort] column to sort
+ *
+ * @apiSuccess {Array} pizzas. (filtered)
+ */</span>
+router.get(<span class="hljs-string">'/'</span>, [], (req, res) =&gt; {
+  <span class="hljs-keyword">if</span>(<span class="hljs-built_in">Object</span>.keys(req.query).length){
+    event.emit(<span class="hljs-string">"pizzas.get.custom"</span>, res, req.query);
+  }<span class="hljs-keyword">else</span>{
+    event.emit(<span class="hljs-string">"pizzas.get"</span>, res);
+  }
+});
+
+<span class="hljs-comment">/**
+ * @api {delete} /pizzas/:id Delete one specific pizza
+ * @apiName DeletePizza
+ * @apiGroup Pizzas
+ *
+ * @apiParam {ObjectId} id id of specific pizza
+ *
+ * @apiSuccess {Boolean} response.
+ */</span>
+router.delete(<span class="hljs-string">'/:id'</span>, [tools.middlewares.verifyToken], (req, res) =&gt; {
+  <span class="hljs-keyword">let</span> query = {<span class="hljs-attr">_id</span>: req.params.id};
+  event.emit(<span class="hljs-string">"pizzas.remove"</span>, res, query);
+});
+
+<span class="hljs-built_in">module</span>.exports = router;</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

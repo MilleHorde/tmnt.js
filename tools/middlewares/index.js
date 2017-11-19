@@ -2,6 +2,12 @@
 const fs = require('fs');
 const constants = require('../../constants');
 
+//FUNCTION checkObject
+//@param req
+//@param res
+//@param next
+//Check if object contains good property, presence of this property and format
+//If error, error is returned with specification of error
 let checkObject = (req, res, next) => {
   let path = req.baseUrl.replace('/', '');
   let config = constants.config[path];
@@ -50,6 +56,11 @@ let checkObject = (req, res, next) => {
     });
 };
 
+//FUNCTION authorized
+//@param req
+//@param res
+//@param next
+//This function check if user authorized to access to contains of routes
 let authorized = (req, res, next) => {
   if(req.user._id.toString() === req.params.id.toString()){
     next();
