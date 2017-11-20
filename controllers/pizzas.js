@@ -10,6 +10,7 @@ const tools = require('../tools');
  * @apiName AddPizza
  * @apiGroup Pizzas
  *
+ * @apiParam {String} token token of user
  * @apiParam {String} name name of pizza
  * @apiParam {Array} ingredients Objectid of ingredients of pizza
  * @apiParam {String} image image of pizza
@@ -41,6 +42,7 @@ router.get('/:id', [], (req, res) => {
  * @apiGroup Pizzas
  *
  * @apiParam {ObjectId} id id of ingredient wanted
+ * @apiParam {String} token token of user
  * @apiParam {String} [name] name of pizza
  * @apiParam {String} [image] image of pizza
  * @apiParam {Array} [ingredients] objectId of ingredients of pizza
@@ -79,6 +81,7 @@ router.get('/', [], (req, res) => {
  * @apiName DeletePizza
  * @apiGroup Pizzas
  *
+ * @apiParam {String} token token of user
  * @apiParam {ObjectId} id id of specific pizza
  *
  * @apiSuccess {Boolean} response.

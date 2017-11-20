@@ -53,6 +53,7 @@ router.get('/:id', [], (req, res) => {
  * @apiName UpdateUserById
  * @apiGroup Users
  *
+ * @apiParam {String} token token of user
  * @apiParam {ObjectId} id id of user wanted
  * @apiParam {String} [lastname] lastname of user
  * @apiParam {String} [firstname] firstname of user
@@ -82,6 +83,7 @@ router.get('/', [], (req, res) => {
  * @apiName DeleteUser
  * @apiGroup Users
  *
+ * @apiParam {String} token token of user
  * @apiParam {ObjectId} id id of specific user
  *
  * @apiSuccess {Boolean} response.
