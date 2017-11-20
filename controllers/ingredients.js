@@ -10,6 +10,7 @@ const tools = require('../tools');
  * @apiName AddIngredient
  * @apiGroup Ingredients
  *
+ * @apiParam {String} token token of user
  * @apiParam {String} name name of ingredient
  * @apiParam {Number} weight weight of ingredient
  * @apiParam {Number} priceCts price of ingredient in cts
@@ -38,6 +39,7 @@ router.get('/:id', [], (req, res) => {
  * @apiName UpdateIngredient
  * @apiGroup Ingredients
  *
+ * @apiParam {String} token token of user
  * @apiParam {ObjectId} id id of ingredient wanted
  * @apiParam {String} [name] name of ingredient
  * @apiParam {Number} [weight] weight of ingredient
@@ -75,6 +77,7 @@ router.get('/', [], (req, res) => {
  * @apiName DeleteIngredient
  * @apiGroup Ingredients
  *
+ * @apiParam {String} token token of user
  * @apiParam {ObjectId} id id of specific ingredient
  *
  * @apiSuccess {Boolean} response.
