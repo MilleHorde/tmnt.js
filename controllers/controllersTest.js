@@ -1271,7 +1271,7 @@ describe('/pizzas', () => {
           let pizza = res.body.response;
           expect(res.statusCode).to.eql(200);
           expect(pizza.name).to.eql(self.pizza1.name);
-          expect(new Buffer(pizza.image.data).toString()).to.eql(self.pizza1.image);
+          expect(pizza.image).to.eql(self.pizza1.image);
           expect(pizza.description).to.eql(self.pizza1.description);
           expect(pizza.ingredients.length).to.eql(self.pizza1.ingredients.length);
           expect(pizza.cook._id.toString()).to.eql(self.pizza1.cook);
@@ -1458,7 +1458,7 @@ describe('/pizzas', () => {
         .then((res) => {
           expect(res.status).to.eql(200);
           expect(res.body.response.description).to.eql("toto");
-          expect(new Buffer(res.body.response.image.data).toString()).to.eql("tata");
+          expect(res.body.response.image).to.eql("tata");
         })
         .catch((err) => {
           throw (err.response) ? Error(err.response.body.Error) : err;

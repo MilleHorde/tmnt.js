@@ -74,6 +74,7 @@ let methods = {
         })
     },
     signin : (data) => {
+      let userTmp;
       return methods.findOne({email :data.email})
         .then((user) => {
           return new Promise((resolve, reject) => {
@@ -88,11 +89,12 @@ let methods = {
           });
         })
         .then((user) => {
+          userTmp = user;
           return tools.verifyJWTAsync(user.token)
         })
         .catch((err) => {
           if(err.name === "TokenExpiredError"){
-            return tools.generateToken((user._id));
+            return tools.generateToken((userTmp._id));
           }
           throw err
         })
