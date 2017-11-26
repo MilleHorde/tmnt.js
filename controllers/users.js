@@ -36,6 +36,18 @@ router.post('/signin', [tools.middlewares.checkObject], (req, res) => {
 });
 
 /**
+ * @api {get} /users/me Get user corresponding to token passed
+ * @apiName GetMe
+ * @apiGroup Users
+ *
+ * @apiSuccess {User} Token's user.
+ */
+router.get('/me', [tools.middlewares.verifyToken], (req, res) => {
+
+  res.json({response: req.user});
+});
+
+/**
  * @api {get} /users/:id Get one specific user
  * @apiName GetUserById
  * @apiGroup Users
@@ -68,7 +80,7 @@ router.put('/:id', [tools.middlewares.verifyToken, tools.middlewares.authorized,
 });
 
 /**
- * @api {put} /users/ Get All Users
+ * @api {get} /users/ Get All Users
  * @apiName GetAllUsers
  * @apiGroup Users
  *
